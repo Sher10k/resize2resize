@@ -24,7 +24,7 @@ using namespace Eigen;
 // type of interpolation
 #define STRINGIFY(x) #x
 #define STRINGIFYMACRO(y) STRINGIFY(y)
-#define INTER_TYPE INTER_LINEAR
+#define INTER_TYPE INTER_CUBIC
                     /// 1 INTER_NEAREST
                     /// 2 INTER_LINEAR
                     /// 3 INTER_CUBIC
@@ -221,13 +221,14 @@ int main()  // int argc, char *argv[]
             for ( int y = 0; y < output_gray.rows; y++ )
                 for ( int x = 0; x < output_gray.cols; x++ )
                 {
-                    if ( img_gs_m.at(k).at< double >(y,x) > 0.4 ) 
+                    //output_gray.at< uchar >(y,x) += img_gs_m.at(k).at< double >(y,x);
+                    if ( img_gs_m.at(k).at< double >(y,x) > 0.0 ) 
                     {
-                        output_gray.at< uint8_t >(y,x) = uint8_t(k-1);
+                        output_gray.at< uchar >(y,x) = uchar(k-1) ;
                         
                         if ( img_gs_m.at(k).at< double >(y,x) > 0.9 ) 
                         {
-                            output_gray.at< uint8_t >(y,x) += 1;
+                            output_gray.at< uchar >(y,x) += 1;
                         }
                     }
                     
@@ -248,6 +249,22 @@ int main()  // int argc, char *argv[]
             cout.flush();
         }
         cout << endl;
+        
+//        cout << "\ntemp: \n";
+//        for ( int y = 0; y < output_gray.rows; y++ )
+//        {
+//            for ( int x = 0; x < output_gray.cols; x++ )
+//            {
+//                if ( !(output_gray.at< uchar >(y,x)) ) 
+//                {
+//                    uchar temp = uchar( 255 * ( abs(img_sobel_X_1_8.at< short >(y,x)) + 
+//                                                abs(img_sobel_Y_1_8.at< short >(y,x)) ) / 1020 );
+//                    output_gray.at< uchar >(y,x) = temp;
+//                    cout << +temp << "\n";
+//                }
+                
+//            }
+//        }
         
             // --- Save output image
         imwrite( img_folder + "output_img_" + STRINGIFYMACRO(INTER_TYPE) + ".png", output_gray * L_VIEW_SIZE, compression_params );
